@@ -15,6 +15,7 @@ import com.project.ms.savings.fixed.accounts.domain.dto.SavingsAccountDto;
 import com.project.ms.savings.fixed.accounts.domain.services.FixedAccountService;
 import com.project.ms.savings.fixed.accounts.domain.services.SavingsAccountService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,64 +23,77 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/accounts")
 public class AccountRestController {
 
-	@Autowired
-	private SavingsAccountService savingsAccountService;
+  @Autowired
+  private SavingsAccountService savingsAccountService;
 
-	@Autowired
-	private FixedAccountService fixedAccountService;
+  @Autowired
+  private FixedAccountService fixedAccountService;
 
-	// Savings Account endpoints
-	@GetMapping("/savings")
-	public Flux<SavingsAccountDto> getAllSavings() {
-		return savingsAccountService.findAll();
-	}
+  // Savings Account endpoints
+  @GetMapping("/savings")
+  public Flux<SavingsAccountDto> getAllSavings() {
+    return savingsAccountService.findAll();
+  }
 
-	@GetMapping("/savings/{id}")
-	public Mono<SavingsAccountDto> getSavings(@PathVariable String id) {
-		return savingsAccountService.findById(id);
-	}
+  @CircuitBreaker(name = "AccountsCB", fallbackMethod = "fallBackGetAccounts")
+  @GetMapping("/savings/{id}")
+  public Mono<SavingsAccountDto> getSavings(@PathVariable String id) {
+    return savingsAccountService.findById(id);
+  }
 
-	@PostMapping("/savings/save")
-	public Mono<SavingsAccountDto> saveSavings(@RequestBody Mono<SavingsAccountDto> savingsAccountDto) {
-		return savingsAccountService.save(savingsAccountDto);
-	}
+  @PostMapping("/savings/save")
+  public Mono<SavingsAccountDto> saveSavings(
+      @RequestBody Mono<SavingsAccountDto> savingsAccountDto) {
+    return savingsAccountService.save(savingsAccountDto);
+  }
 
-	@PutMapping("/savings/update/{id}")
-	public Mono<SavingsAccountDto> updateSavings(@RequestBody Mono<SavingsAccountDto> savingsAccountDto,
-			@PathVariable String id) {
-		return savingsAccountService.update(savingsAccountDto, id);
-	}
+  @PutMapping("/savings/update/{id}")
+  public Mono<SavingsAccountDto> updateSavings(
+      @RequestBody Mono<SavingsAccountDto> savingsAccountDto,
+      @PathVariable String id) {
+    return savingsAccountService.update(savingsAccountDto, id);
+  }
 
-	@DeleteMapping("/savings/delete/{id}")
-	public Mono<Void> deleteSavings(@PathVariable String id) {
-		return savingsAccountService.deleteById(id);
-	}
+  @DeleteMapping("/savings/delete/{id}")
+  public Mono<Void> deleteSavings(@PathVariable String id) {
+    return savingsAccountService.deleteById(id);
+  }
 
-	// Fixed Account endpoints
-	@GetMapping("/fixed")
-	public Flux<FixedAccountDto> getAllFixed() {
-		return fixedAccountService.findAll();
-	}
+  // Fixed Account endpoints
+  @GetMapping("/fixed")
+  public Flux<FixedAccountDto> getAllFixed() {
+    return fixedAccountService.findAll();
+  }
 
-	@GetMapping("/fixed/{id}")
-	public Mono<FixedAccountDto> getFixed(@PathVariable String id) {
-		return fixedAccountService.findById(id);
-	}
+  @GetMapping("/fixed/{id}")
+  public Mono<FixedAccountDto> getFixed(@PathVariable String id) {
+    return fixedAccountService.findById(id);
+  }
 
-	@PostMapping("/fixed/save")
-	public Mono<FixedAccountDto> saveFixed(@RequestBody Mono<FixedAccountDto> fixedAccountDto) {
-		return fixedAccountService.save(fixedAccountDto);
-	}
+  @PostMapping("/fixed/save")
+  public Mono<FixedAccountDto> saveFixed(
+      @RequestBody Mono<FixedAccountDto> fixedAccountDto) {
+    return fixedAccountService.save(fixedAccountDto);
+  }
 
-	@PutMapping("/fixed/update/{id}")
-	public Mono<FixedAccountDto> updateFixed(@RequestBody Mono<FixedAccountDto> fixedAccountDto,
-			@PathVariable String id) {
-		return fixedAccountService.update(fixedAccountDto, id);
-	}
+  @PutMapping("/fixed/update/{id}")
+  public Mono<FixedAccountDto> updateFixed(
+      @RequestBody Mono<FixedAccountDto> fixedAccountDto,
+      @PathVariable String id) {
+    return fixedAccountService.update(fixedAccountDto, id);
+  }
 
-	@DeleteMapping("/fixed/delete/{id}")
-	public Mono<Void> deleteFixed(@PathVariable String id) {
-		return fixedAccountService.deleteById(id);
-	}
+  @DeleteMapping("/fixed/delete/{id}")
+  public Mono<Void> deleteFixed(@PathVariable String id) {
+    return fixedAccountService.deleteById(id);
+  }
+
+  public Mono<SavingsAccountDto> fallBackGetAccounts(
+      @PathVariable("id") String id, Throwable e) {
+    SavingsAccountDto account = new SavingsAccountDto();
+    account.setAccountNumber("Not account information");
+
+    return Mono.just(account);
+  }
 
 }
