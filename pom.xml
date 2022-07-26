@@ -6,8 +6,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.1</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>2.6.9</version>
+		<relativePath />
 	</parent>
 	<groupId>com.project.ms.savings.fixed.accounts</groupId>
 	<artifactId>ms_SavingsFixedAccounts</artifactId>
@@ -30,7 +30,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -73,7 +72,6 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<!--<version>5.8.2</version> -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -94,7 +92,6 @@
 			<version>0.8.8</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>

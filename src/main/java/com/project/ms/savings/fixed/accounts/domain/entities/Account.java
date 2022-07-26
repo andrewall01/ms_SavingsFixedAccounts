@@ -45,6 +45,6 @@ public abstract class Account {
 
 	@Field("updated_at")
 	@LastModifiedDate
-	private Date UpdatedAt;
+	private Date updatedAt;
 
 }
