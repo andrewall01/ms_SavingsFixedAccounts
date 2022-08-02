@@ -13,8 +13,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class SavingsAccountServiceImpl implements SavingsAccountService {
-
-	@Autowired
+  
+  @Autowired
 	private SavingsAccountRepository savingsAccountDao;
 
 	@Override
@@ -28,8 +28,8 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
 	}
 
 	@Override
-	public Mono<SavingsAccountDto> save(Mono<SavingsAccountDto> savingsAccountDto) {
-		return savingsAccountDto.map(Utils::dtoToEntity)
+	public Mono<SavingsAccountDto> save(Mono<SavingsAccountDto> savingsAccountDto) {	  
+	  return savingsAccountDto.map(Utils::dtoToEntity)
 				.flatMap(savingsAccountDao::insert)
 				.map(Utils::entityToDto);
 	}

@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ms.savings.fixed.accounts.domain.dto.FixedAccountDto;
 import com.project.ms.savings.fixed.accounts.domain.dto.SavingsAccountDto;
+import com.project.ms.savings.fixed.accounts.domain.entities.SavingsAccount;
 import com.project.ms.savings.fixed.accounts.domain.services.FixedAccountService;
 import com.project.ms.savings.fixed.accounts.domain.services.SavingsAccountService;
+import com.project.ms.savings.fixed.accounts.domain.services.SavingsService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import reactor.core.publisher.Flux;
@@ -95,5 +97,19 @@ public class AccountRestController {
 
     return Mono.just(account);
   }
+  
+  //Kafka
+  @Autowired
+  private final SavingsService savingService;
+  
+  public AccountRestController(SavingsService savingService) {
+    super();
+    this.savingService = savingService;
+  }
+  
+  @PostMapping
+  public SavingsAccount save(@RequestBody SavingsAccount savingService) {
+  return this.savingService.save(savingService);
+}
 
 }
